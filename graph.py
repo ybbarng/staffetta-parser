@@ -40,7 +40,7 @@ def plot_line_graph(title, name, xname, x, yname, y, color, xlimit=None):
     line.set_color(color)
     line.set_linewidth(4)
 
-def get_data(index, data_type, is_cdf=False):
+def get_data(index, data_type, is_cdf=False, postfix=''):
     xs = []
     collisions = []
     get_collisions = {
@@ -48,7 +48,7 @@ def get_data(index, data_type, is_cdf=False):
         'time': parser.get_tc,
     }
     total = 0
-    for x, collision in sorted(get_collisions[data_type]('data/loglistener{}-random.txt'.format(index))):
+    for x, collision in sorted(get_collisions[data_type]('data/loglistener{}{}.txt'.format(index, postfix))):
         print(x, collision)
         xs.append(x)
         total += collision
@@ -59,11 +59,11 @@ def get_data(index, data_type, is_cdf=False):
     return xs, collisions
 
 
-def plot(data_type, is_cdf=False):
+def plot(data_type, is_cdf=False, postfix=''):
     setup_out_directory()
     indexes = [9, 16, 25, 36]
     for index in indexes:
-        xs, collisions = get_data(index, data_type, is_cdf)
+        xs, collisions = get_data(index, data_type, is_cdf, postfix)
         xlimit = 20 if data_type == 'time' else None
         xname = data_type
         yname = 'collision'
@@ -77,4 +77,5 @@ def plot(data_type, is_cdf=False):
 if __name__ == '__main__':
     # data_type: frequency, time
     # is_cdf: True, False
-    plot('time', True)
+    # postfix: '', '-random'
+    plot('time', True, '-random')
