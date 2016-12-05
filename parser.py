@@ -1,4 +1,6 @@
 from collections import Counter
+from datetime import datetime
+from decimal import Decimal
 
 from node import Node
 
@@ -32,9 +34,21 @@ def get_fc(filename):
     parse(filename)
     collisions = Counter()
     for node_id, node in nodes.items():
-        collisions += node.get_collisions()
+        collisions += node.get_fcs()
     return collisions.most_common()
 
 
 def get_tc(filename):
-    pass
+    ''' times and collisions '''
+    parse(filename)
+    collisions = Counter()
+    for node_id, node in nodes.items():
+        print(node.get_tcs())
+        for timestamp, collision in node.get_tcs().most_common():
+            print(timestamp)
+            print(datetime.strptime(timestamp, '%M:%S.%f'))
+            timestamp = Decimal((datetime.strptime(timestamp, '%M:%S.%f') - datetime(1900, 1, 1)).total_seconds()).quantize(Decimal('1'))
+            print(timestamp)
+            collisions.update({timestamp: collision})
+    return collisions.most_common()
+    collisions = [ _ / total for _ in collisions]

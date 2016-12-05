@@ -21,48 +21,60 @@ for i in range(len(tableau20)):
 def setup_out_directory():
     if not path.exists(out_directory):
         makedirs(out_directory)
-    else:
-        for _file in listdir(out_directory):
-            remove(out_directory + path.sep + _file)
 
 
 def save_plot(name):
     pl.savefig(out_directory + path.sep + name + '.png')
 
 
-def plot_line_graph(name, x, y, color):
-    pl.title('Frequency Collision Graph', fontsize=22)
-    pl.xlabel('Frequency', fontsize=16)
-    pl.ylabel('Collisions', fontsize=16)
+def plot_line_graph(title, name, xname, x, yname, y, color, xlimit=None):
+    pl.title(title, fontsize=22)
+    pl.xlabel(xname, fontsize=16)
+    pl.ylabel(yname, fontsize=16)
+    if xlimit is not None:
+        pl.xlim(xmin=0, xmax=xlimit)
     pl.grid('on')
 
-    line, = pl.plot(x, y, '-', label=name)
+    line, = pl.plot(x, y, linestyle=':', marker='o', label=name)
     line.set_antialiased(True)
     line.set_color(color)
+    line.set_linewidth(4)
 
-def get_data(index):
-    frequencies = []
+def get_data(index, data_type, is_cdf=False):
+    xs = []
     collisions = []
+    get_collisions = {
+        'frequency': parser.get_fc,
+        'time': parser.get_tc,
+    }
     total = 0
-    for frequency, collision in sorted(parser.get_fc('data/loglistener{}.txt'.format(index))):
-        print(frequency, collision)
-        frequencies.append(frequency)
-        collisions.append(collision)
+    for x, collision in sorted(get_collisions[data_type]('data/loglistener{}.txt'.format(index))):
+        print(x, collision)
+        xs.append(x)
         total += collision
+        collisions.append(total if is_cdf else collision)
+    if is_cdf:
+        collisions = [ _ / total for _ in collisions]
     print(total)
-    return frequencies, collisions
+    return xs, collisions
 
 
-def plot():
+def plot(data_type, is_cdf=False):
     setup_out_directory()
     indexes = [10, 20, 30, 40, 50]
     for index in indexes:
-        frequencies, collisions = get_data(index)
-        plot_line_graph(index, frequencies, collisions, tableau20[index // 10])
-    pl.legend()
+        xs, collisions = get_data(index, data_type, is_cdf)
+        xlimit = 20 if data_type == 'time' else None
+        xname = data_type
+        yname = 'collision'
+        title = xname.title() + ' - ' + yname.title() + (' - CDF ' if is_cdf else '') + ' Graph'
+        plot_line_graph(title, str(index), xname, xs, yname, collisions, tableau20[index // 10], xlimit)
+    pl.legend(loc=2)
     pl.show()
     pl.close()
 
 
 if __name__ == '__main__':
-    plot()
+    # data_type: frequency, time
+    # is_cdf: True, False
+    plot('time', False)

@@ -6,7 +6,8 @@ class Node:
     def __init__(self, node_id):
         self.node_id = node_id
         self.frequency = 10
-        self.collisions = Counter()
+        self.fcs = Counter()
+        self.tcs = Counter()
         self.messages = []
 
     def on_message(self, timestamp, message):
@@ -27,10 +28,14 @@ class Node:
         self.frequency = frequency
 
     def on_collision(self, timestamp):
-        self.collisions[self.frequency] += 1
+        self.fcs[self.frequency] += 1
+        self.tcs[timestamp] += 1
 
-    def get_collisions(self):
-        return self.collisions
+    def get_fcs(self):
+        return self.fcs
+
+    def get_tcs(self):
+        return self.tcs
 
     def print_messages(self):
         print('Messages of Node {}'.format(self.node_id))
