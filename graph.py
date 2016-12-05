@@ -48,12 +48,12 @@ def get_data(index, data_type, is_cdf=False):
         'time': parser.get_tc,
     }
     total = 0
-    for x, collision in sorted(get_collisions[data_type]('data/loglistener{}.txt'.format(index))):
+    for x, collision in sorted(get_collisions[data_type]('data/loglistener{}-random.txt'.format(index))):
         print(x, collision)
         xs.append(x)
         total += collision
         collisions.append(total if is_cdf else collision)
-    if is_cdf:
+    if is_cdf and False:
         collisions = [ _ / total for _ in collisions]
     print(total)
     return xs, collisions
@@ -61,7 +61,7 @@ def get_data(index, data_type, is_cdf=False):
 
 def plot(data_type, is_cdf=False):
     setup_out_directory()
-    indexes = [10, 20, 30, 40, 50]
+    indexes = [9, 16, 25, 36]
     for index in indexes:
         xs, collisions = get_data(index, data_type, is_cdf)
         xlimit = 20 if data_type == 'time' else None
@@ -77,4 +77,4 @@ def plot(data_type, is_cdf=False):
 if __name__ == '__main__':
     # data_type: frequency, time
     # is_cdf: True, False
-    plot('time', False)
+    plot('time', True)
