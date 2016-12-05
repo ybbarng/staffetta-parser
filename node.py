@@ -11,6 +11,8 @@ class Node:
     def on_message(self, timestamp, message):
         if message[0].isdigit():
             self.parse(timestamp, list(map(int, message.split())))
+        if 'collision' in message.lower():
+            self.on_collision(timestamp)
 
     def parse(self, timestamp, argv):
         if argv[0] == 2:
