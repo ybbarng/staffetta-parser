@@ -24,9 +24,6 @@ def parse(filename):
             nodes[node_id] = Node(node_id)
         nodes[node_id].on_message(timestamp, message)
 
-    for node_id, node in nodes.items():
-        node.print_messages()
-
 
 if __name__ == '__main__':
     import argparse
