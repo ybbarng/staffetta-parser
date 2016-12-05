@@ -80,7 +80,7 @@ def plot(data_type, is_cdf=False, postfix=''):
 if __name__ == '__main__':
     import argparse
 
-    parser = argparse.ArgumentParser(description='Staffetta Parser')
+    parser = argparse.ArgumentParser(description='Staffetta Parser', prefix_chars='@')
     parser.add_argument('data_type', choices=['frequency', 'time'])
     parser.add_argument('is_cdf', choices=['true', 'false'], default='false')
     parser.add_argument('postfix', type=str, default='')
