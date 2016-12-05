@@ -1,5 +1,7 @@
-from node import Node
 from collections import Counter
+
+from node import Node
+from graph import plot
 
 
 nodes = {}
@@ -24,12 +26,14 @@ def parse(filename):
         if node_id not in nodes:
             nodes[node_id] = Node(node_id)
         nodes[node_id].on_message(timestamp, message)
+    get_collisions()
 
+
+def get_collisions():
     collisions = Counter()
     for node_id, node in nodes.items():
         collisions += node.get_collisions()
-
-    print(collisions)
+    plot(collisions)
 
 
 if __name__ == '__main__':
