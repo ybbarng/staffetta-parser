@@ -1,3 +1,9 @@
+from node import Node
+
+
+nodes = {}
+
+
 def open_log(filename):
     with open(filename) as f:
         while True:
@@ -8,11 +14,18 @@ def open_log(filename):
 
 
 def parse(filename):
+    global nodes
     timestamp = 0
     node_id = 0
     message = 0
     for timestamp, node_id, message in open_log(filename):
-        print(node_id)
+        node_id = int(node_id[3:])
+        if node_id not in nodes:
+            nodes[node_id] = Node(node_id)
+        nodes[node_id].on_message(timestamp, message)
+
+    for node_id, node in nodes.items():
+        node.print_messages()
 
 
 if __name__ == '__main__':
