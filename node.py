@@ -1,8 +1,12 @@
+from collections import Counter
+
+
 class Node:
 
     def __init__(self, node_id):
         self.node_id = node_id
         self.frequency = 0
+        self.collisions = Counter()
 
     def on_message(self, timestamp, message):
         if message[0].isdigit():
@@ -17,3 +21,9 @@ class Node:
             return
         print('Node {}: {} -> {}'.format(self.node_id, self.frequency, frequency))
         self.frequency = frequency
+
+    def on_collision(self, timestamp):
+        self.collisions[self.frequency] += 1
+
+    def get_collisions(self):
+        return self.collisions

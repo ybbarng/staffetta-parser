@@ -1,4 +1,5 @@
 from node import Node
+from collections import Counter
 
 
 nodes = {}
@@ -23,6 +24,12 @@ def parse(filename):
         if node_id not in nodes:
             nodes[node_id] = Node(node_id)
         nodes[node_id].on_message(timestamp, message)
+
+    collisions = Counter()
+    for node_id, node in nodes.items():
+        collisions += node.get_collisions()
+
+    print(collisions)
 
 
 if __name__ == '__main__':
