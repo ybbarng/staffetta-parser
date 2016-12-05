@@ -45,9 +45,12 @@ def plot(data):
     setup_out_directory()
     frequencies = []
     collisions = []
+    total = 0
     for frequency, collision in data.most_common():
         frequencies.append(frequency)
         collisions.append(collision)
+        total += collision
+    print(total)
     plot_line_graph('Frequency Collision Graph', frequencies, collisions, tableau20[1])
     save_plot('frequency-collision-graph')
     pl.legend()
