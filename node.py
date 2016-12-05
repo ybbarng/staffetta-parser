@@ -7,8 +7,10 @@ class Node:
         self.node_id = node_id
         self.frequency = 10
         self.collisions = Counter()
+        self.messages = []
 
     def on_message(self, timestamp, message):
+        self.messages.append((timestamp, message))
         if message[0].isdigit():
             self.parse(timestamp, list(map(int, message.split())))
         if 'collision' in message.lower():
@@ -29,3 +31,8 @@ class Node:
 
     def get_collisions(self):
         return self.collisions
+
+    def print_messages(self):
+        print('Messages of Node {}'.format(self.node_id))
+        for message in self.messages:
+            print(message)
