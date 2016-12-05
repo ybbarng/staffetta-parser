@@ -4,6 +4,8 @@ from os import path, listdir, makedirs, remove
 
 import pylab as pl
 
+import parser
+
 out = '/out'
 script_directory = path.dirname(path.realpath(__file__))
 out_directory = script_directory + out
@@ -29,30 +31,34 @@ def save_plot(name):
 
 
 def plot_line_graph(name, x, y, color):
-    pl.title(name, fontsize=22)
+    pl.title('Frequency Collision Graph', fontsize=22)
     pl.xlabel('Frequency', fontsize=16)
     pl.ylabel('Collisions', fontsize=16)
-    pl.ylim(ymin=0, ymax=120)
-    pl.xlim(xmin=0, xmax=180)
     pl.grid('on')
 
-    line, = pl.plot(x, y, 'ro', label=name)
+    line, = pl.plot(x, y, '-', label=name)
     line.set_antialiased(True)
     line.set_color(color)
 
-
-def plot(data):
-    setup_out_directory()
+def get_data(index):
     frequencies = []
     collisions = []
     total = 0
-    for frequency, collision in data.most_common():
+    for frequency, collision in sorted(parser.get_fc('data/loglistener{}.txt'.format(index))):
+        print(frequency, collision)
         frequencies.append(frequency)
         collisions.append(collision)
         total += collision
     print(total)
-    plot_line_graph('Frequency Collision Graph', frequencies, collisions, tableau20[1])
-    save_plot('frequency-collision-graph')
+    return frequencies, collisions
+
+
+def plot():
+    setup_out_directory()
+    indexes = [10, 20, 30, 40, 50]
+    for index in indexes:
+        frequencies, collisions = get_data(index)
+        plot_line_graph(index, frequencies, collisions, tableau20[index // 10])
     pl.legend()
     pl.show()
     pl.close()

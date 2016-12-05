@@ -1,7 +1,6 @@
 from collections import Counter
 
 from node import Node
-from graph import plot
 
 
 nodes = {}
@@ -26,20 +25,16 @@ def parse(filename):
         if node_id not in nodes:
             nodes[node_id] = Node(node_id)
         nodes[node_id].on_message(timestamp, message)
-    get_collisions()
 
 
-def get_collisions():
+def get_fc(filename):
+    ''' frequencies and collisions '''
+    parse(filename)
     collisions = Counter()
     for node_id, node in nodes.items():
         collisions += node.get_collisions()
-    plot(collisions)
+    return collisions.most_common()
 
 
-if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(description='Staffetta Log Parser')
-    parser.add_argument('filename', help='The name of a log file to be parsed')
-    args = parser.parse_args()
-    parse(args.filename)
+def get_tc(filename):
+    pass
