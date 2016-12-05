@@ -27,10 +27,12 @@ def save_plot(name):
     pl.savefig(out_directory + path.sep + name + '.png')
 
 
-def plot_line_graph(title, name, xname, x, yname, y, color, xlimit=None):
+def plot_line_graph(title, name, xname, x, yname, y, color, xlimit=None, ylimit=None):
     pl.title(title, fontsize=22)
     pl.xlabel(xname, fontsize=16)
     pl.ylabel(yname, fontsize=16)
+    if ylimit is not None:
+        pl.ylim(ymin=0, ymax=ylimit)
     if xlimit is not None:
         pl.xlim(xmin=0, xmax=xlimit)
     pl.grid('on')
@@ -64,11 +66,12 @@ def plot(data_type, is_cdf=False, postfix=''):
     indexes = [9, 16, 25, 36]
     for index in indexes:
         xs, collisions = get_data(index, data_type, is_cdf, postfix)
-        xlimit = 20 if data_type == 'time' else None
+        xlimit = 17 if data_type == 'time' else None
+        ylimit = 300 if data_type == 'time' else None
         xname = data_type
         yname = 'collision'
         title = xname.title() + ' - ' + yname.title() + (' - CDF ' if is_cdf else '') + ' Graph'
-        plot_line_graph(title, str(index), xname, xs, yname, collisions, tableau20[index // 10], xlimit)
+        plot_line_graph(title, str(index), xname, xs, yname, collisions, tableau20[index // 10], xlimit, ylimit)
     pl.legend(loc=2)
     pl.show()
     pl.close()
