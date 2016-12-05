@@ -4,7 +4,7 @@ from os import path, listdir, makedirs, remove
 
 import pylab as pl
 
-import parser
+import parser as s_parser
 
 out = '/out'
 script_directory = path.dirname(path.realpath(__file__))
@@ -44,8 +44,8 @@ def get_data(index, data_type, is_cdf=False, postfix=''):
     xs = []
     collisions = []
     get_collisions = {
-        'frequency': parser.get_fc,
-        'time': parser.get_tc,
+        'frequency': s_parser.get_fc,
+        'time': s_parser.get_tc,
     }
     total = 0
     for x, collision in sorted(get_collisions[data_type]('data/loglistener{}{}.txt'.format(index, postfix))):
@@ -75,7 +75,12 @@ def plot(data_type, is_cdf=False, postfix=''):
 
 
 if __name__ == '__main__':
-    # data_type: frequency, time
-    # is_cdf: True, False
-    # postfix: '', '-random'
-    plot('time', True, '-random')
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Staffetta Parser')
+    parser.add_argument('data_type', choices=['frequency', 'time'])
+    parser.add_argument('is_cdf', choices=['true', 'false'], default='false')
+    parser.add_argument('postfix', type=str, default='')
+
+    args = parser.parse_args()
+    plot(args.data_type, args.is_cdf == 'true', args.postfix)
